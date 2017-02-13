@@ -18,7 +18,7 @@ Login-AzurRmAccount
 Select-AzureRmSubscription -SubscriptionId $SubId
 
 #Get all nics details and store in variable 
-$nics = get-azurermnetworkinterface
+$nics = Get-AzureRmNetworkInterface
 
 #Print on screen all the nics which has a null value to Virtual Machine and select the 
 #Nic Name, Location and resource group it belows to
