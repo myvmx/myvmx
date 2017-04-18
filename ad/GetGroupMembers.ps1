@@ -2,6 +2,7 @@
 ## Get Group Membership 
 ## Author : Kin Yung
 ## 18/04/2017
+######################################
 
 ## Store Group Name
 $groupname = "Group Name"
@@ -11,4 +12,4 @@ $group = get-adgroup -Filter {name -eq $groupname}
 Get-ADGroupMember -Identity $group | select Name
 
 ## Single line code
-Get-ADGroupMember -Identity $(get-adgroup -Filter {name -eq "Group Name"}) | select Name
+#Get-ADGroupMember -Identity $(get-adgroup -Filter {name -eq "Group Name"}) | select Name
