@@ -7,7 +7,7 @@
 ### Variable
 ## define the tag you would like to find
 $SubId = "You SubSciption ID"
-##C ustom Role Name in Azure
+## Custom Role Name in Azure
 $CustomRoleName = "Your Custom Role" 
 ###
 
