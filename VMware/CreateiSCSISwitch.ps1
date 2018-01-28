@@ -2,6 +2,8 @@
 This script is to create an new vSwitch
 Create all the vmkernel enable iSCSI
 create port binding
+
+KY 28/01/18 v0.1
 #>
 
 ### Variables for creating the iSCSI Switch
