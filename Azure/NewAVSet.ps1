@@ -1,9 +1,6 @@
 ﻿<#
-
 Script to create a AV Set
-
 KY v0.1 01/03/18
-
 #>
 
 # Variables
