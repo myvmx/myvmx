@@ -33,5 +33,7 @@ Else
 {
 # Create AV Set
 Write-Host "Creating Availability Set " $AvSetName " in Resource Group " $ResourceGroupName
-New-AzureRmAvailabilitySet -Location $Location -Name $AvSetName -ResourceGroupName $ResourceGroupName
+## SKU code aligned is required so that you can ensure mamaged disk are also highly available
+New-AzureRmAvailabilitySet -Location $Location -Name $AvSetName -ResourceGroupName $ResourceGroupName -PlatformFaultDomainCount "3" -PlatformUpdateDomainCount "5" -Sku "Aligned"
+
 }
