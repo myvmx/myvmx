@@ -8,7 +8,7 @@ KY 0.1 21/02/18
 # Variables
 $SubName = "Your Subscription Name"
 # The file will be written in current directory that you have ran this script from
-$FileName = "Your text file name"
+$FileName = "Your text file name.txt"
 
 
 # Login to Azure Account
@@ -30,4 +30,7 @@ $Location.Location | Out-File $FileName -Append
 Get-AzureRMVMUsage -Location $location.Location | Out-File $FileName -Append
 }
 
-<#Get-AzureRmNetworkUsage, Get-AzureRMStorageUsage#>
+<#
+Other usage commands that maybe useful
+Get-AzureRmNetworkUsage, Get-AzureRMStorageUsage
+#>
