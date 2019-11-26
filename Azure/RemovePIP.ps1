@@ -1,6 +1,7 @@
 <####
 # Script to remove Public IP from all network interface in a resource group which may
 # have more than one profile
+# https://docs.microsoft.com/en-us/powershell/module/azurerm.network/set-azurermnetworkinterface?view=azurermps-6.13.0
 # KY 19/11/19 v0.1
 ####>
 
