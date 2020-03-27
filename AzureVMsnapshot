@@ -1,0 +1,81 @@
+<#
+Script to be used in Automation account to take a snapshot of a VM and its disk
+I have captured the lun and caching settings to be stored as tags values in case need to rebuild the VM
+it stores the snapshot in the same location as the VM
+
+#>
+
+# Define parameter where user needs to type in VM name to be found
+Param
+(
+  [Parameter (Mandatory= $true)]
+  [string] $vmname = "nosuchvm"
+)
+
+# Print on screen
+Write-Output "Locating VM details of : $vmName" 
+
+## Get Info About The VM
+$vm = get-azurermvm | Where-Object {$_.Name -eq $vmName}
+# Using the date and time to make a the snapshot name unqiue
+$Snapdate = get-date -UFormat %Y-%m-%d-T-%H-%M-%S
+# tag name to have date it was created but shorter format
+$tagdate = get-date -UFormat %Y-%m-%d
+
+if ($vm -eq $null)
+    {
+    # Can't find VM so exit script
+    Write-Output " VM does not exist"
+    return
+    }
+Else
+    {
+    Write-Output "Going through to take snapshot of server : $($vm.name)"
+        # Check what disk type the OS Disk is and snap it as the same format or maybe just do it in tags?
+        If ($vm.StorageProfile.OsDisk.ManagedDisk.StorageAccountType -like "*ssd*")
+            {$StorAccType = "Premium_LRS"}
+        Else
+            {$StorAccType = "Standard_LRS"}
+        # Grab caching details for tag
+        $cachingtag = $vm.StorageProfile.OsDisk.caching
+        # Tag values for OS Disk
+        $OSDiskTag = @{"snapservername"=($vm.name); "created_on"="$tagdate"; "caching"="$cachingtag"}
+        # Snapshot config for OS    
+        $snapshot = New-AzureRmSnapshotConfig -SourceUri $vm.StorageProfile.OsDisk.ManagedDisk.Id -Location $vm.location -CreateOption copy -Account $StorAccType -Tag $OSDiskTag
+        # Output the name of the disk we are snapping
+        Write-output "Creating OS Disk snapshot of : $($vm.StorageProfile.OsDisk.name)"
+        # Snapshot name of OS Disk
+        $SnapshotName = $vm.StorageProfile.OsDisk.name + "-snapshot-" + $snapdate
+        # Output the name of the snapshot
+        Write-Output "OS Disk Snapshot Name : $snapshotName"
+        # Take snapshot of OS disk
+        New-AzureRmSnapshot -Snapshot $snapshot -SnapshotName $SnapshotName -ResourceGroupName $vm.ResourceGroupName
+        
+        # Work on data disk    
+        foreach ($storage in $vm.StorageProfile.DataDisks)  
+            {   
+                #Write-Output $Storage.Name
+                $disk = Get-AzureRmDisk -ResourceGroupName $vm.ResourceGroupName -DiskName $storage.Name 
+            
+                # Check what disk it is and snap it as the same format or maybe just do it in tags?        
+                If ($disk.sku.name -like "*ssd*")
+                    {$DataStorAccType = "Premium_LRS"}
+                Else
+                    {$DataStorAccType = "Standard_LRS"}
+                 
+                # Grab caching details for tag
+                $cachingtag = $storage.caching
+                # Grab lun details for tag
+                $luntag = $storage.lun
+                # Tag values for data Disk
+                $DataDiskTag = @{"snapservername"=($vm.name); "created_on"="$tagdate"; "lun" = "$luntag";"caching"="$cachingtag"}
+        
+                $snapshot =  New-AzureRmSnapshotConfig -SourceUri $disk.Id -Location $vm.location -CreateOption copy -Account $DataStorAccType -Tag $DataDiskTag
+                Write-output "Creating data Disk snapshot of $($disk.name)" 
+                $SnapshotName = $disk.name + "-snapshot-" + $snapdate
+                Write-Output "Data Disk Snapshot Name : $snapshotName"
+        
+                New-AzureRmSnapshot -Snapshot $snapshot -SnapshotName $snapshotName -ResourceGroupName $vm.ResourceGroupName
+            }
+
+    }
