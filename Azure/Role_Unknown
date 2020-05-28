@@ -1,3 +1,6 @@
 # Get role assignments where Resource Identity not found or Unable to find identity shown in portal
 
 Get-AzureRmRoleAssignment | where {$_.ObjectType -eq "unknown"}
+
+# remove the entry
+Remove-AzureRmRoleAssignment -ObjectId "object id" -RoleDefinitionName "Role Def Name" -Scope "scope"
