@@ -21,7 +21,7 @@ $subs = Get-AzSubscription
                 $Stortier = $storinfo.AccessTier
                 $storskuname = $StorInfo.Sku.name
                 $storskuperformance = $storinfo.sku.tier
-                "$StorageAccountName,$usedCapacityInMB,$StorageRGName,$SubName,$storkind, $stortier, $storskuname, $storskuperformance" >> ".\storageAccountsUsedCapacityiPSLDev.csv"
+                "$StorageAccountName,$usedCapacityInMB,$StorageRGName,$SubName,$storkind, $stortier, $storskuname, $storskuperformance" >> ".\UsedCapacity.csv"
                 $StorageAccountName
                 $usedCapacityInMB
                 $subname
